@@ -1,23 +1,24 @@
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
 <div class="login-backdrop">
 </div>
 
 <div id="login-container">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <form>
+        <input placeholder="Username">
+        <input placeholder="Password">
+    </form>
     <div id="g_id_onload"
-        data-client_id="65259580951-trndvh2cfsaj3bldst5eg8trt1093jdj.apps.googleusercontent.com"
-        data-context="signup"
-        data-ux_mode="popup"
-        data-login_uri="localhost:4200"
-        data-auto_select="true">
-    </div>
-
-    <div class="g_id_signin"
-        data-type="standard"
-        data-shape="pill"
-        data-theme="outline"
-        data-text="signin_with"
-        data-size="large"
-        data-logo_alignment="left"
-        style="height: 500px; width: 500px">
-    </div>
+    data-client_id="65259580951-trndvh2cfsaj3bldst5eg8trt1093jdj.apps.googleusercontent.com"
+    data-login_uri="https://localhost:7268/api/GoogleUser"
+    data-auto_prompt="false">
+ </div>
+ <div class="g_id_signin"
+    data-type="standard"
+    data-size="large"
+    data-theme="outline"
+    data-text="sign_in_with"
+    data-shape="rectangular"
+    data-logo_alignment="left">
+ </div>
 </div>
