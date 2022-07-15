@@ -9,7 +9,6 @@ namespace dog_breed_world.Models
     {
       _config = config;
     }
-    public DbSet<GoogleUser>? GoogleUsers { get; set; }
     public DbSet<User>? Users { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -19,7 +18,7 @@ namespace dog_breed_world.Models
     {
       base.OnModelCreating(modelBuilder);
 
-      modelBuilder.Entity<GoogleUser>(entity =>
+      modelBuilder.Entity<User>(entity =>
       {
         entity.HasKey(e => e.Id);
       });

@@ -2,11 +2,14 @@ using Microsoft.AspNetCore.Mvc;
 using dog_breed_world.Models;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text.Json;
+using System.Web.Helpers;
+using System.Text.RegularExpressions;
 
 namespace dog_breed_world.Controllers
 {
@@ -18,7 +21,11 @@ namespace dog_breed_world.Controllers
         private readonly Context _context;
         private readonly ILogger<Register_Login> _logger;
 
-        public Register_Login(ILogger<Register_Login> logger, Context context, IConfiguration config)
+        // Regex patterns
+        private readonly string emailPattern = @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z";
+        private readonly string usernamePattern = "^[a-zA-Z0-9]+$";
+        private readonly string namePattern = @"/^[A-Za-z\x{00C0}-\x{00FF}][A-Za-z\x{00C0}-\x{00FF}\'\-]+([\ A-Za-z\x{00C0}-\x{00FF}][A-Za-z\x{00C0}-\x{00FF}\'\-]+)*/u";
+    public Register_Login(ILogger<Register_Login> logger, Context context, IConfiguration config)
         {
             _logger = logger;
             _context = context;
@@ -32,6 +39,45 @@ namespace dog_breed_world.Controllers
             Console.WriteLine(googJWT);
             return true;
         }
+    [HttpPost]
+    [Route("register")]
+    public IResult Register(User user)
+    {
+      try
+        {
+        // backend validation for required values
+              if(
+                Regex.IsMatch(user.EmailAddress, emailPattern) &&
+                Regex.IsMatch(user.Username, usernamePattern) &&
+                Regex.IsMatch(user.GivenName, namePattern) &&
+                Regex.IsMatch(user.Surname, namePattern)
+                )
+                  {
+                    string rng = Crypto.GenerateSalt(16);
+                    user.Id = null;
+                    user.createdAt = DateTime.Now;
+                    user.updatedAt = DateTime.Now;
+                    user.Role = "user";
+                    user.Salt = rng.ToString();
+                    user.Hash = Crypto.Hash(user.Password + rng);
+                    User? userCheck = _context.Users.FirstOrDefault(x => x.Username == user.Username || x.EmailAddress == user.EmailAddress);
+                    if(userCheck != null)
+                    {
+                      _context.Add(user);
+                      _context.SaveChanges();
+                      Console.WriteLine(user.Salt);
+                      return Results.Accepted();
+                    }
+                    return Results.Problem("Username or Email already in database", "register instance", 403);
+                  }
+              return Results.Problem("Entries did not follow requirements", "register instance", 403);
+        }
+      catch (Exception ex)
+      {
+        return Results.Problem($"Error: {ex.Message} ", "register instance", 500);
+      }
+      
+    }
     [HttpPost]
     [Route("login")]
     public IResult Login(UserLogin user)
