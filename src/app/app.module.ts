@@ -30,7 +30,7 @@ import {
         {
           id: GoogleLoginProvider.PROVIDER_ID,
           provider: new GoogleLoginProvider(
-            'clientId'
+            '65259580951-trndvh2cfsaj3bldst5eg8trt1093jdj.apps.googleusercontent.com'
           )
         },
         {
