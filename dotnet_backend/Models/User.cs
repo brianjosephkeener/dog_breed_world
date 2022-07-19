@@ -18,11 +18,8 @@ namespace dog_breed_world.Models
     public string? GivenName { get; set; }
     [Required]
     public string? Surname { get; set; }
-    [Required]
     public string? Role { get; set; }
-    [Required]
     public string? Salt { get; set; }
-    [Required]
     public string? Hash { get; set; }
     
     public DateTime? createdAt { get; set; } = DateTime.Now;

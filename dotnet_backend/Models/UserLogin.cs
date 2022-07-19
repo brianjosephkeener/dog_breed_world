@@ -9,7 +9,5 @@ namespace dog_breed_world.Models
     [Required]
     public string? Username { get; set; }
     public string? Password { get; set; }
-    public DateTime? createdAt { get; set; } = DateTime.Now;
-    public DateTime? updatedAt { get; set; } = DateTime.Now;
   }
 }
